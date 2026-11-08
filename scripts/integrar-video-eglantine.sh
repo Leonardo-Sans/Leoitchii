@@ -17,6 +17,8 @@ if ! git -C "$SOURCE_DIR" cherry-pick -x "$MOVIE_FIX_SHA"; then
   echo "ERRO: conflito no port de vídeo; intervenção manual necessária." >&2
   git -C "$SOURCE_DIR" diff --name-only --diff-filter=U || true
   git -C "$SOURCE_DIR" status --short || true
+  echo "===== TRECHOS CONFLITANTES DA INTEGRAÇÃO DE VÍDEO ====="
+  awk '/^<<<<<<< /{show=1} show{print NR ":" $0} /^>>>>>>> /{show=0}' "$SOURCE_DIR/src/core/hle/service/nx2_gsv.h" | head -n 900 || true
   exit 4
 fi
 if ! grep -q 'EDEN_NX2_VDEC_PACE' "$SOURCE_DIR/src/core/hle/service/nx2_gsv.h"; then
