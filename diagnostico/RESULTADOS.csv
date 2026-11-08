@@ -1,0 +1,8 @@
+Teste,Cena,FPS_medio,FPS_minimo,VRAM_dedicada_MB,Memoria_GPU_compartilhada_MB,RAM_sistema_MB,Objetos_pretos_segundos,Observacoes
+v0.2-normal,Kokiri_parado,,,,,,,
+v0.2-normal,Kokiri_girando_camera,,,,,,,
+v0.2-cache90,Kokiri_parado,,,,,,,
+v0.2-cache90,Kokiri_girando_camera,,,,,,,
+v0.2-workers4,Kokiri_parado,,,,,,,
+v0.2-workers4,Kokiri_girando_camera,,,,,,,
+v0.2-normal,Cutscene_intro,,,,,,,
