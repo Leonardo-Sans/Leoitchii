@@ -1,0 +1,94 @@
+name: Leoitchii - prototipo GTX1050Ti Windows
+
+on:
+  push:
+    branches: [prototipo-gtx1050ti]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leoitchii-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compilar:
+    name: Integrar e compilar Windows x64
+    runs-on: windows-2022
+    timeout-minutes: 120
+    steps:
+      - name: Obter scripts Leoitchii
+        uses: actions/checkout@v4
+
+      - name: Integrar Fritchii v4.1 + correção Lichii
+        shell: bash
+        run: bash scripts/integrar-fritchii.sh source
+
+      - name: Preparar ambiente MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Instalar Qt 6.8.3
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.8.3"
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: qtcharts
+          cache: true
+
+      - name: Instalar Vulkan SDK (script da base Fritchii)
+        shell: pwsh
+        working-directory: source
+        run: ./tools/windows/install-vulkan-sdk.ps1
+
+      - name: Verificar ferramentas
+        shell: pwsh
+        run: |
+          cmake --version
+          ninja --version
+          glslangValidator --version
+
+      - name: Configurar Release
+        shell: bash
+        run: |
+          cmake -S source -B source/build/leoitchii -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=OFF \
+            -DYUZU_TESTS=OFF \
+            -DYUZU_CMD=ON \
+            -DYUZU_ROOM=OFF \
+            -DYUZU_ROOM_STANDALONE=OFF \
+            -DYUZU_USE_BUNDLED_QT=OFF \
+            -DYUZU_USE_BUNDLED_SDL3=ON \
+            -DENABLE_UPDATE_CHECKER=OFF \
+            -DUSE_DISCORD_PRESENCE=OFF \
+            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.1 \
+            -DLICHII_BUILD_PLATFORM=windows-x86_64
+
+      - name: Compilar executáveis
+        shell: bash
+        run: cmake --build source/build/leoitchii --target yuzu yuzu-cmd --parallel 4
+
+      - name: Verificar executáveis e adicionar Qt
+        shell: pwsh
+        run: |
+          $bin = "source/build/leoitchii/bin"
+          if (!(Test-Path "$bin/lichii.exe")) { throw "lichii.exe não foi gerado" }
+          if (!(Test-Path "$bin/eden-cli.exe")) { throw "eden-cli.exe não foi gerado" }
+          windeployqt --release --no-translations "$bin/lichii.exe"
+
+      - name: Criar pacote experimental
+        shell: pwsh
+        run: |
+          $bin = "source/build/leoitchii/bin"
+          Compress-Archive -Path "$bin/*" -DestinationPath "Leoitchii-gtx1050ti-windows-experimental.zip" -Force
+
+      - name: Disponibilizar artefato (somente se compilação passar)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Leoitchii-gtx1050ti-windows-experimental
+          path: Leoitchii-gtx1050ti-windows-experimental.zip
+          retention-days: 7
+          if-no-files-found: error

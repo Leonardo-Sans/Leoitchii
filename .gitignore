@@ -1,0 +1,11 @@
+# Não armazenar fontes compiladas, firmwares, ROMs, chaves ou saves
+source/
+build/
+*.nsp
+*.xci
+*.nca
+*.keys
+*.sav
+*.zip
+*.exe
+*.dll
