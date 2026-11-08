@@ -1,0 +1,28 @@
+LEOITCHII v0.2 - EXPERIMENTO GTX 1050 Ti / 4 GB
+================================================
+
+IMPORTANTE: o exe padrao permanece como comparativo da v0.1.
+- Para executar com o teste conservador, clique em Leoitchii-1050Ti-Eco.cmd.
+- Para A/B, execute lichii.exe diretamente (mesma cena, sem frame generation).
+- O modo Eco testa 2 workers ASTC em vez dos 3 que o Fritchii v4.1 usaria em Ryzen 5 5600 (12 threads).
+- O pacing do filme foi integrado do Eglantine: descarta quadros de videos atrasados.
+  Nao e uma aceleracao de cenas 3D nem garante reproduzir a mais de 8 FPS.
+
+No menu de configuracao de GRAFICOS (anote valores anteriores):
+  API: Vulkan
+  GPU accuracy: Low/Fast
+  ASTC recompression: BC3 (nao Uncompressed)
+  VRAM usage: Conservative
+  Resolution: 0.75x, ou 0.5x se necessario
+  Anti-aliasing: Off (testar contra FXAA)
+  Asynchronous shaders: On
+  Frame generation: Off (medir FPS real)
+  NVDEC: GPU e CPU em A/B para videos; GTX 1050 Ti nao decodifica AV1 por hardware
+  Memory layout: 8GB, NAO trocar para 4GB (e memoria virtual do console, nao VRAM)
+
+Fog/neblina: NAO foi removida — primeiro precisamos identificar shaders e medir custo.
+Ray tracing: nao ha RT por hardware na GTX 1050 Ti; nao assuma que o jogo o habilitou.
+O PC pode ter gargalo de GPU, CPU, VRAM ou streaming. Registre FPS, RAM/VRAM e cena.
+
+Antes do teste: backupe saves; use pasta separada.
+Nao envie jogo, firmware, chaves ou saves ao GitHub.
