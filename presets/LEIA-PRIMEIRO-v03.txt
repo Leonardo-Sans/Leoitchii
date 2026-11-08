@@ -1,0 +1,48 @@
+LEOITCHII v0.3 - GTX 1050 Ti (PERFIL VISUAL EXPERIMENTAL)
+===========================================================
+
+Versao funcional preservada: base-validada-gtx1050ti-v01.
+Base v0.2 preservada em branch experimentos-1050ti-v02 (se for aprovada).
+
+OTIMIZACOES PADRAO DE V0.3 (quando sem preferencia salva):
+- OotAntiAliasing: NoSharpening. Tenta pular rede AA/nitidez propria do OoT;
+  a imagem anterior a rede e copiada. Pode tornar a imagem menos nitida.
+- Resolucao: 0.75x em vez de 1x.
+- Antialiasing do emulador: Off, em vez de FXAA.
+- Filtro de ampliacao: Bilinear, em vez de ScaleForce.
+
+CONFIGURACOES QUE NAO ALTERAMOS:
+- MemoryLayout: 8 GB do console emulado, nao VRAM.
+- BC3 ASTC recompression e VRAM conservative: ja existem na base.
+- Mesh shader fallback Lichii: mantido.
+- Iluminacao, sombras e fog: nao removidos por padrao.
+- Ray tracing: nenhuma tecnica RT por hardware exigida da GTX 1050 Ti.
+
+IMPORTANTE: config anteriores do jogador podem SOBRESCREVER os defaults.
+Confirme na interface (na configuracao do jogo OoT):
+  OoT anti aliasing: NoSharpening (para A/B, volte para Game)
+  Anti-aliasing: Off
+  Resolution: 0.75x, se preciso 0.5x
+  Scaling filter: Bilinear
+  GPU accuracy: Fast
+  VRAM: Conservative
+  ASTC recompression: BC3
+  VSync / frame pacing: usar mesmo modo entre comparacoes
+  Frame Generation: Off para medir FPS real
+
+FOG OPCIONAL:
+- Existe Leoitchii-1050Ti-Fog-OFF-TESTE.cmd, experimento que rejeita
+  UM programa compute identificado como "fog" em codigo do Fritchii.
+- Nao e garantia de remover so neblina. Pode destruir outros efeitos,
+  deixar a tela em preto ou NAO produzir efeito, dependendo do cache.
+- Feche e abra lichii.exe normalmente para reverter a tentativa.
+- Se a imagem ficar errada ou nao ganhar FPS, abandone o teste.
+- Nao desabilitamos sombras cegamente; nenhum shader puro identificado.
+
+REGISTRE MEDICOES:
+- FPS real (sem geracao de quadros) e 1% lows, mesma camera/cena.
+- Cena de Kokiri Forest + Link's house + cutscene 3D + intro AV1.
+- Se houver mais FPS com geometria/cutscenes afetadas, nao aprovar.
+
+ATENCAO: usuario e responsavel por usar backup proprio e pasta isolada.
+Nao compartilhar chaves, firmware, jogo, arquivos extraidos ou saves.
