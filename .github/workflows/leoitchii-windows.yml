@@ -26,7 +26,7 @@ jobs:
         run: bash scripts/integrar-fritchii.sh source
 
       - name: Integrar correção de sincronismo dos filmes Eglantine
-        if: contains(fromJSON('["experimentos-1050ti-v02","experimentos-gtx1050ti-cache-v04"]'), github.ref_name)
+        if: contains(fromJSON('["experimentos-1050ti-v02","experimentos-gtx1050ti-cache-v04","lote-gtx1050ti-v05-preparacao"]'), github.ref_name)
         shell: bash
         run: bash scripts/integrar-video-eglantine.sh source
 
@@ -69,7 +69,7 @@ jobs:
             -DYUZU_USE_BUNDLED_SDL3=ON \
             -DENABLE_UPDATE_CHECKER=OFF \
             -DUSE_DISCORD_PRESENCE=OFF \
-            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.4 \
+            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.5 \
             -DLICHII_BUILD_PLATFORM=windows-x86_64
 
       - name: Compilar executáveis
@@ -98,12 +98,16 @@ jobs:
             Copy-Item "presets/Leoitchii-v04-Monitor-VRAM.cmd" "$bin/Leoitchii-v04-Monitor-VRAM.cmd"
             Copy-Item "presets/LEIA-PRIMEIRO-v04.txt" "$bin/LEIA-PRIMEIRO-v04.txt"
           }
+          if ('${{ github.ref_name }}' -eq 'lote-gtx1050ti-v05-preparacao') {
+            Copy-Item "presets/LEOITCHII-GTX1050Ti-Laboratorio.cmd" "$bin/LEOITCHII-GTX1050Ti-Laboratorio.cmd"
+            Copy-Item "presets/LEIA-PRIMEIRO-v05.txt" "$bin/LEIA-PRIMEIRO-v05.txt"
+          }
           Compress-Archive -Path "$bin/*" -DestinationPath "Leoitchii-gtx1050ti-windows-experimental.zip" -Force
 
       - name: Disponibilizar artefato (somente se compilação passar)
         uses: actions/upload-artifact@v4
         with:
-          name: Leoitchii-gtx1050ti-windows-experimental
+          name: Leoitchii-${{ github.ref_name }}-windows-experimental
           path: Leoitchii-gtx1050ti-windows-experimental.zip
           retention-days: 30
           if-no-files-found: error

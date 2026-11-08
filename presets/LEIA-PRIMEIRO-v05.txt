@@ -1,0 +1,51 @@
+LEOITCHII v0.5 - LOTE DE EXPERIMENTOS GTX 1050 TI / 4 GB
+============================================================
+
+STATUS: AINDA NAO COMPILADA. Este documento descreve a preparacao.
+BASE: v0.2 funcional. v0.4 adicionou a tentativa de preload mesh.
+
+MELHORIAS REAIS DE CODIGO:
+- Fallback Lichii via compute: mantido.
+- Reaproveitamento no cache de pipelines Mesh (v0.4): mantido.
+- Correcao posterior Lichii #642: conta buffers auxiliares (1 ou 4)
+  no limite do Vulkan descriptor set antes de construir pipeline.
+  Essa mudanca e DE CORRECAO/ESTABILIDADE, nao incremento de FPS.
+
+LABORATORIO OPCIONAL (um unico executavel, sem nova compilacao):
+- LEOITCHII-GTX1050Ti-Laboratorio.cmd com testes individuais e combinado.
+- ASTC 128 MiB: limita grandes texturas (normalmente 256 MiB em <7GB).
+- 4 workers de transcodificacao: pode aproveitar Ryzen 5 5600.
+- PIPELINE_CLEAN: evita verificacao redundante de estados em CPU.
+- EVICT_ABOVE=3500: economiza memoria dos pipelines em 16 GB RAM,
+  mas pode exigir refazer shaders quando revisita areas.
+- Perfil combinado somente depois de medir testes isolados.
+- Espera por shader: auxilia identificar objetos pretos; pode congelar.
+- TC_MIN_AGE=60: possivel reducao do thrash; RISCO de estourar VRAM.
+- LEOITCHII_MESH_DISK_CACHE=0: isola ganho do preload da v0.4.
+- Workaround de fog identificado no Fritchii: tambem afeta exposicao.
+  NAO desliga o pass nem remove garantidamente a neblina do chao.
+
+VISUAL / CONFIGURACOES NO EMULADOR:
+- Ocarina of Time AA: GAME (NoSharpening causou ~5 FPS na v0.3).
+- Confirmar Vulkan; modo handheld apenas se nao quebrar imagem.
+- Testar 1x, 0.75x, 0.5x separadamente em Game (preferencias persistem).
+- GPU Accuracy Fast; ASTC BC3; VRAM Conservative.
+- No jogo: rodar com frame generation OFF para medir FPS real.
+
+CUTSCENES:
+- Eglantine sincroniza apresentacao de quadros de videos (v0.2).
+- AV1 no Pascal nao tem decoder de hardware; FFmpeg pode usar CPU.
+- A opcao NVDEC GPU/CPU controla tentativa de hardware em
+  Nx2VideoDecoder, mas disponibilidade AV1 decide fallback.
+  Nao pressupor que mudar esta opcao soluciona cenas 3D.
+
+COMO TESTAR:
+1. Leia docs/V05-MATRIZ-DE-TESTES.md.
+2. v0.2 permanece comparativo de jogo real; v0.3 foi rejeitada.
+3. Primeiro teste isoladamente 128 MiB, 4 workers, CLEAN, e so depois
+   combinado; mesma cena, mesmas configuracoes, shader cache aquecido.
+4. Fazer backup de saves; logs sem arquivos do jogo.
+5. Fechar e abrir lichii.exe diretamente restaura flags de cada CMD.
+6. Nao apagar shader cache sem registrar: criaria warmup artificial.
+
+Se a v0.5 for pior, manter v0.2. Nao mesclar na main sem teste.
