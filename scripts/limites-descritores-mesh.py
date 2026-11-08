@@ -25,8 +25,7 @@ if original.count(anchor) != 1:
 for expected in (
     "mesh_emulation.emplace();",
     "mesh_emulation->has_task",
-    "host_info.max_descriptor_set_storage_buffers",
-    "Shader::NumDescriptors",
+    "device.GetMaxDescriptorSetStorageBuffers()",
 ):
     # Shader::NumDescriptors is introduced by the fallback #569.
     if expected not in original:
@@ -37,7 +36,7 @@ guard = """    // Leoitchii: port de Lichii #642. O fallback mesh emulado usa 1
     // A base Fritchii nao possui a checagem antiga do Lichii; guardamos
     // apenas o caminho emulado, para nao mudar pipelines convencionais.
     if (mesh_emulation) {
-        const u32 set_limit = host_info.max_descriptor_set_storage_buffers;
+        const u32 set_limit = device.GetMaxDescriptorSetStorageBuffers();
         if (set_limit != 0) {
             size_t guest_storage_buffers{};
             for (size_t index = uses_vertex_a && uses_vertex_b ? 1 : 0;
@@ -50,9 +49,11 @@ guard = """    // Leoitchii: port de Lichii #642. O fallback mesh emulado usa 1
             const size_t auxiliary_buffers{mesh_emulation->has_task ? 4U : 1U};
             if (auxiliary_buffers > set_limit ||
                 guest_storage_buffers > set_limit - auxiliary_buffers) {
-                throw Shader::NotImplementedException(
-                    "Mesh fallback descriptor set exceeds limit: {} guest, {} auxiliary, max {}",
-                    guest_storage_buffers, auxiliary_buffers, set_limit);
+                LOG_WARNING(Render_Vulkan,
+                            "Mesh fallback skipped: descriptor set {} guest + {} auxiliary "
+                            "buffers exceeds limit {}",
+                            guest_storage_buffers, auxiliary_buffers, set_limit);
+                return nullptr;
             }
         }
     }
