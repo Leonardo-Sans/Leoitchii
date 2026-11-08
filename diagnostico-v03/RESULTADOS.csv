@@ -1,0 +1,8 @@
+Versao,Teste,Resolucao,OoT_AA,FXAA,Scaling,FPS_Kokiri_medio,FPS_Kokiri_minimo,Fog_no_chao_mudou,Objetos_pretos,Observacoes
+v0.2,Padrao,,,,,20,,,, 
+v0.3,Padrao,,,,,5,,,, 
+v0.3,Game_AA,,,,,,,, 
+v0.3,Game_AA_1x,,,,,,,, 
+v0.3,NoSharpening_1x,,,,,,,, 
+v0.2,Fog_25porcento,,,,,,,, 
+v0.2,Fog_reject_shader,,,,,,,, 
