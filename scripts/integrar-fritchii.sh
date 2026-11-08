@@ -37,6 +37,12 @@ if ! git -C "$SOURCE_DIR" cherry-pick -x "$LICHII_FIX_SHA"; then
   echo "Arquivos em conflito:"
   git -C "$SOURCE_DIR" diff --name-only --diff-filter=U || true
   git -C "$SOURCE_DIR" status --short || true
+  echo "======= TRECHOS CONFLITANTES (diagnóstico, não execução) ======="
+  while IFS= read -r file; do
+    [[ -z "$file" ]] && continue
+    echo "------- $file -------"
+    (awk '/^<<<<<<< /{show=1} show{print NR ":" $0} /^>>>>>>> /{show=0}' "$SOURCE_DIR/$file" | head -n 500) || true
+  done < <(git -C "$SOURCE_DIR" diff --name-only --diff-filter=U)
   echo "Nenhuma resolução automática foi aplicada."
   exit 4
 fi
