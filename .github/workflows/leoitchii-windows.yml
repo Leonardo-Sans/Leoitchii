@@ -2,7 +2,7 @@ name: Leoitchii - prototipo GTX1050Ti Windows
 
 on:
   push:
-    branches: [prototipo-gtx1050ti]
+    branches: [prototipo-gtx1050ti, experimentos-1050ti-v02]
   workflow_dispatch:
 
 permissions:
@@ -24,6 +24,11 @@ jobs:
       - name: Integrar Fritchii v4.1 + correção Lichii
         shell: bash
         run: bash scripts/integrar-fritchii.sh source
+
+      - name: Integrar correção de sincronismo dos filmes Eglantine
+        if: github.ref_name == 'experimentos-1050ti-v02'
+        shell: bash
+        run: bash scripts/integrar-video-eglantine.sh source
 
       - name: Preparar ambiente MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -64,7 +69,7 @@ jobs:
             -DYUZU_USE_BUNDLED_SDL3=ON \
             -DENABLE_UPDATE_CHECKER=OFF \
             -DUSE_DISCORD_PRESENCE=OFF \
-            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.1 \
+            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.2 \
             -DLICHII_BUILD_PLATFORM=windows-x86_64
 
       - name: Compilar executáveis
@@ -83,6 +88,10 @@ jobs:
         shell: pwsh
         run: |
           $bin = "source/build/leoitchii/bin"
+          if ('${{ github.ref_name }}' -eq 'experimentos-1050ti-v02') {
+            Copy-Item "presets/Leoitchii-1050Ti-Eco.cmd" "$bin/Leoitchii-1050Ti-Eco.cmd"
+            Copy-Item "presets/LEIA-PRIMEIRO-v02.txt" "$bin/LEIA-PRIMEIRO-v02.txt"
+          }
           Compress-Archive -Path "$bin/*" -DestinationPath "Leoitchii-gtx1050ti-windows-experimental.zip" -Force
 
       - name: Disponibilizar artefato (somente se compilação passar)
@@ -90,5 +99,5 @@ jobs:
         with:
           name: Leoitchii-gtx1050ti-windows-experimental
           path: Leoitchii-gtx1050ti-windows-experimental.zip
-          retention-days: 7
+          retention-days: 30
           if-no-files-found: error
