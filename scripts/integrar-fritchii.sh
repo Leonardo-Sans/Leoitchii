@@ -59,4 +59,6 @@ fi
 
 echo "Integração aplicada no commit local:"
 git -C "$SOURCE_DIR" log -1 --format='%h %s'
+echo "Aplicando correção mínima de nomes para compilador MSVC (/we4459)..."
+python scripts/corrigir-frizti-settings.py "$SOURCE_DIR"
 echo "Pronto para tentar compilar, ainda não validado em hardware real."
