@@ -1,5 +1,12 @@
 # Leoitchii v0.3 — regressão confirmada no teste do usuário
 
+## Teste de isolamento confirmado pelo usuário (08/11/2026)
+- Mantendo o executável **v0.3**, ao mudar **apenas** `Ocarina of Time anti-aliasing` de **NoSharpening** para **Game**, o desempenho na vila ficou **mais próximo do observado na v0.2**.
+- Esta evidência favorece o **bypass NoSharpening como principal responsável pela regressão da v0.3 na GTX 1050 Ti**, ou pela interação desse bypass com o restante das configurações.
+- **Não** há medida de FPS preciso após a reversão, e o teste não prova que NoSharpening é sempre ruim em outras GPUs ou na resolução 1×.
+- **Decisão:** não habilitar NoSharpening por padrão para GTX 1050 Ti. Voltar a **Game**, preservar v0.2 e priorizar cache de texturas/VRAM, cutscenes e fog com medição. Outras mudanças da v0.3 (0,75×, FXAA Off e Bilinear) ainda precisam de A/B próprio.
+- **Sem nova compilação para esta constatação.** A opção já é selecionável na interface.
+
 ## Resultado observado em 08/11/2026
 - **v0.2:** até 30 FPS em dungeons; ~20 FPS na vila com quedas, intro e cutscenes ainda lentas, objetos pretos temporários.
 - **v0.3:** ~5 FPS na mesma vila; objetos pretos e cutscenes não resolvidos.
