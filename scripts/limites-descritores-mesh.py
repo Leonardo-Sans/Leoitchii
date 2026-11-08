@@ -58,12 +58,12 @@ guard = """    // Leoitchii: port de Lichii #642. O fallback mesh emulado usa 1
         }
     }
 """
-if original.count("Mesh fallback descriptor set exceeds limit") != 0:
+if original.count("Mesh fallback skipped: descriptor set") != 0:
     raise SystemExit("Guarda #642 ja inserida; falhando para evitar duplicata")
 if original.index("mesh_emulation.emplace();") > original.index(anchor):
     raise SystemExit("Ordem do fallback inesperada; patch recusado")
 candidate = original.replace(anchor, guard + anchor, 1)
-if candidate.count("Mesh fallback descriptor set exceeds limit") != 1:
+if candidate.count("Mesh fallback skipped: descriptor set") != 1:
     raise SystemExit("Guarda #642 nao inserida corretamente")
 file.write_text(candidate, encoding="utf-8", newline="\n")
 print("Guarda Lichii #642 inserida somente para fallback mesh; Fritchii convencional intacto.")
