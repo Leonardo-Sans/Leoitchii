@@ -33,6 +33,15 @@ git -C "$SOURCE_DIR" config user.email "integration@users.noreply.github.com"
 
 echo "Tentando portar a correção do Lichii..."
 if ! git -C "$SOURCE_DIR" cherry-pick -x "$LICHII_FIX_SHA"; then
+  echo "Conflitos detectados. Tentando resolução RESTRITA e verificada dos três trechos já auditados..."
+  if python scripts/resolver_conflitos.py "$SOURCE_DIR"; then
+    git -C "$SOURCE_DIR" add -- \
+      src/video_core/renderer_vulkan/vk_graphics_pipeline.cpp \
+      src/video_core/renderer_vulkan/vk_pipeline_cache.cpp \
+      src/video_core/renderer_vulkan/vk_rasterizer.h
+    GIT_EDITOR=true git -C "$SOURCE_DIR" cherry-pick --continue
+    echo "Resolução restrita concluída; nenhuma outra divergência foi ignorada."
+  else
   echo "ERRO: a correção não pôde ser aplicada sem conflitos."
   echo "Arquivos em conflito:"
   git -C "$SOURCE_DIR" diff --name-only --diff-filter=U || true
@@ -45,6 +54,7 @@ if ! git -C "$SOURCE_DIR" cherry-pick -x "$LICHII_FIX_SHA"; then
   done < <(git -C "$SOURCE_DIR" diff --name-only --diff-filter=U)
   echo "Nenhuma resolução automática foi aplicada."
   exit 4
+  fi
 fi
 
 echo "Integração aplicada no commit local:"
