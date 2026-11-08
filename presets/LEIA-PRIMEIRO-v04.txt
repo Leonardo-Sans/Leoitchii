@@ -1,0 +1,38 @@
+LEOITCHII v0.4 - GTX 1050 Ti (EXPERIMENTO DE CACHE MESH)
+========================================================
+
+Objetivo: melhorar reaproveitamento de pipelines Mesh Shaders emulados
+pelo fallback do Lichii, especialmente apos fechar e reabrir o jogo.
+Nao promete corrigir FPS baixo nas primeiras cenas. Pode aumentar
+tempo de preparacao de shaders na inicializacao, mas reduzir recompilacoes.
+
+MUDANCA UNICA NO CODIGO DE RENDERIZACAO:
+- Fritchii v4.1 descartava registros task/mesh do cache em GPUs sem
+  VK_EXT_mesh_shader ANTES de checar fallback Lichii.
+- v0.4 deixa GPUs NVIDIA sem Mesh Shader TENTAREM recuperar tais
+  pipelines. O proprio fallback ainda valida requisitos e pode rejeitar.
+- Nao muda outras GPUs e pode ser desligado por variavel de ambiente.
+
+IMPORTANTE:
+- Ocarina of Time anti-aliasing: GAME, NUNCA NoSharpening na GTX1050Ti
+  (testado pelo usuario: v0.3 passou de 20 a 5 FPS; Game recuperou).
+- BC3 e VRAM Conservative mantidos.
+- Fog ao nivel do chao NAO removida; identificar shader antes.
+- GTX 1050 Ti Pascal nao acelera AV1 por hardware: compare video CPU
+  e GPU nas configuracoes do emulador. Pacing Eglantine continua ativo.
+- Nao apague shader cache, saves ou firmware.
+- NAO ALTERE memoria emulada 8GB como se fosse VRAM.
+
+COMO TESTAR:
+1. Rode lichii.exe normalmente; anote FPS na mesma cena da vila.
+2. Feche, reabra na mesma cena para ver se ha MENOS shaders novos.
+3. Rode Leoitchii-v04-MeshCache-OFF.cmd: compara com filtro v0.2.
+4. Opcional, com cuidado: Leoitchii-v04-ShaderWait-TESTE.cmd. Se objetos
+   pretos desaparecem mas surgem grandes pausas, o problema parece ser
+   pipelines ainda compilando. Feche e reabra normalmente.
+5. Opcional: Leoitchii-v04-Monitor-VRAM.cmd. Registre linhas
+   "Texture cache", "Slow upload", "Out of device memory" no log.
+
+CRITERIO DE ACEITE: ganho real com geometria correta, sem novos
+crashes ou regressao acima da v0.2. Nao mesclar se nao for melhor.
+Use pasta separada; backup saves; nao envie ROMs, keys ou firmware.
