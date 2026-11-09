@@ -3,7 +3,7 @@
 # Reproduce the reviewed upstream Lichii #961 all-zero-page trimming port.
 # Never guess source offsets or partially apply on a conflict.
 set -euo pipefail
-ROOT="\${1:-source}"
+ROOT="${1:-source}"
 SHA="2b30c2cb1ceb8f9a6e385b7cea45705dca07b722"
 LICHII_URL="https://github.com/zortos293/Lichii.git"
 git -C "$ROOT" fetch --no-tags --depth=2 "$LICHII_URL" "$SHA"
