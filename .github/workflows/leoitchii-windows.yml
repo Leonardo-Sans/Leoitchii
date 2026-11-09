@@ -2,7 +2,7 @@ name: Leoitchii - prototipo GTX1050Ti Windows
 
 on:
   push:
-    branches: [prototipo-gtx1050ti, experimentos-1050ti-v02, experimentos-gtx1050ti-cache-v04, lote-gtx1050ti-v05-preparacao, lote-gtx1050ti-v06-preparacao, lote-v07-consolidada-fritchii55]
+    branches: [prototipo-gtx1050ti, experimentos-1050ti-v02, experimentos-gtx1050ti-cache-v04, lote-gtx1050ti-v05-preparacao, lote-gtx1050ti-v06-preparacao, lote-v07-consolidada-fritchii55, lote-v07-lichii130-ports]
   workflow_dispatch:
 
 permissions:
@@ -92,7 +92,7 @@ jobs:
 
       - name: Compilar executáveis
         shell: bash
-        run: cmake --build source/build/leoitchii --target yuzu yuzu-cmd --parallel 4
+        run: cmake --build source/build/leoitchii --target yuzu yuzu-cmd --parallel 4 -- -k 12
 
       - name: Verificar executáveis e adicionar Qt
         shell: pwsh
