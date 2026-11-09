@@ -1,7 +1,7 @@
 name: Leoitchii v0.6 - validar patches sem compilar
 on:
   push:
-    branches: [lote-gtx1050ti-v06-preparacao]
+    branches: [lote-gtx1050ti-v06-preparacao, lote-v07-menu-identidade]
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verificar sintaxe dos patches
         run: |
-          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py
+          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py scripts/gerar-icone-leoitchii-v07.py scripts/aplicar-identidade-laboratorio-v07.py
           bash -n scripts/integrar-fritchii.sh scripts/integrar-video-eglantine.sh
       - name: Integrar Fritchii e fallback Lichii
         run: bash scripts/integrar-fritchii.sh source
@@ -38,4 +38,17 @@ jobs:
           grep -q 'void Free()' source/src/shader_recompiler/object_pool.h
           grep -q 'LEOITCHII_IR_EARLY_FREE' source/src/video_core/renderer_vulkan/vk_pipeline_cache.cpp
           grep -q 'SetupPartition' source/src/video_core/host_shaders/astc_decoder.comp
+          git -C source diff --check
+
+      - name: Validar painel e branding v0.7 sem compilar
+        if: github.ref_name == 'lote-v07-menu-identidade'
+        run: |
+          python scripts/gerar-icone-leoitchii-v07.py source/dist/leoitchii.ico
+          python scripts/aplicar-identidade-laboratorio-v07.py source
+          test -s source/dist/leoitchii.ico
+          grep -q 'Leoitchii::InstallMenu(this)' source/src/yuzu/main_window.cpp
+          grep -q 'Leoitchii::ApplyAtStartup()' source/src/yuzu/main.cpp
+          grep -q 'OUTPUT_NAME "Leoitchii"' source/src/yuzu/CMakeLists.txt
+          grep -q 'FileDescription' source/src/yuzu/yuzu.rc
+          grep -q 'LEOITCHII_MESH_DISK_CACHE' source/src/yuzu/leoitchii_lab.h
           git -C source diff --check
