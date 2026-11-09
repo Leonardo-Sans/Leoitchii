@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verificar sintaxe dos patches
         run: |
-          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py scripts/gerar-icone-leoitchii-v07.py scripts/aplicar-identidade-laboratorio-v07.py scripts/portar-eglantine-video-v07.py scripts/portar-lichii130-correcoes-v07.py scripts/alternar-trim-zero-v07.py scripts/corrigir-shadow-engines-v07.py
+          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py scripts/gerar-icone-leoitchii-v07.py scripts/aplicar-identidade-laboratorio-v07.py scripts/portar-eglantine-video-v07.py scripts/portar-lichii130-correcoes-v07.py scripts/alternar-trim-zero-v07.py scripts/corrigir-shadow-engines-v07.py scripts/corrigir-shadow-qmd-vulkan-v07.py
           bash -n scripts/integrar-fritchii.sh scripts/integrar-video-eglantine.sh scripts/portar-lichii130-trim-v07.sh
       - name: Integrar Fritchii e fallback Lichii
         if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name) }}
@@ -80,6 +80,8 @@ jobs:
             grep -q 'auto\& draw_batch_state = draw_manager.draw_state;' source/src/video_core/engines/maxwell_3d.cpp
             grep -q 'for (const u64 dispatch_count : dispatch_checks)' source/src/video_core/engines/maxwell_3d.cpp
             grep -q 'for (const u64 dispatch_count : dispatches.unbounded)' source/src/video_core/engines/maxwell_3d.cpp
+            grep -q 'u32 matched_audits = 0;' source/src/video_core/nx2_qmd_prediction.cpp
+            grep -q 'split.RecordDispatchWrite(\*indirect_device, 12);' source/src/video_core/renderer_vulkan/vk_rasterizer.cpp
           fi
           git -C source diff --check
 
