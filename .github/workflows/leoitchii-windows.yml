@@ -9,9 +9,8 @@ permissions:
   contents: read
 
 concurrency:
-  # A v0.5 assume o grupo da v0.4 para interromper sua compilação longa.
-  # Depois da migração, voltar a um grupo por branch, se necessário.
-  group: leoitchii-windows-refs/heads/experimentos-gtx1050ti-cache-v04
+  # Isola compilações entre branches, sem cancelar a build validada de outra versão.
+  group: leoitchii-windows-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -28,7 +27,7 @@ jobs:
         run: bash scripts/integrar-fritchii.sh source
 
       - name: Integrar correção de sincronismo dos filmes Eglantine
-        if: contains(fromJSON('["experimentos-1050ti-v02","experimentos-gtx1050ti-cache-v04","lote-gtx1050ti-v05-preparacao"]'), github.ref_name)
+        if: contains(fromJSON('["experimentos-1050ti-v02","experimentos-gtx1050ti-cache-v04","lote-gtx1050ti-v05-preparacao","lote-gtx1050ti-v06-preparacao"]'), github.ref_name)
         shell: bash
         run: bash scripts/integrar-video-eglantine.sh source
 
@@ -71,7 +70,7 @@ jobs:
             -DYUZU_USE_BUNDLED_SDL3=ON \
             -DENABLE_UPDATE_CHECKER=OFF \
             -DUSE_DISCORD_PRESENCE=OFF \
-            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.5 \
+            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.6 \
             -DLICHII_BUILD_PLATFORM=windows-x86_64
 
       - name: Compilar executáveis
@@ -103,6 +102,13 @@ jobs:
           if ('${{ github.ref_name }}' -eq 'lote-gtx1050ti-v05-preparacao') {
             Copy-Item "presets/LEOITCHII-GTX1050Ti-Laboratorio.cmd" "$bin/LEOITCHII-GTX1050Ti-Laboratorio.cmd"
             Copy-Item "presets/LEIA-PRIMEIRO-v05.txt" "$bin/LEIA-PRIMEIRO-v05.txt"
+          }
+          if ('${{ github.ref_name }}' -eq 'lote-gtx1050ti-v06-preparacao') {
+            Copy-Item "presets/LEOITCHII-GTX1050Ti-Laboratorio-v06.cmd" "$bin/LEOITCHII-GTX1050Ti-Laboratorio-v06.cmd"
+            Copy-Item "presets/Leoitchii-v06-Alias-OFF-A-B.cmd" "$bin/Leoitchii-v06-Alias-OFF-A-B.cmd"
+            Copy-Item "presets/Leoitchii-v06-IR-Memoria-OFF-A-B.cmd" "$bin/Leoitchii-v06-IR-Memoria-OFF-A-B.cmd"
+            Copy-Item "presets/LEOITCHII-V05-Bloom-TESTE.cmd" "$bin/LEOITCHII-Bloom-TESTE.cmd"
+            Copy-Item "presets/LEIA-PRIMEIRO-v06.txt" "$bin/LEIA-PRIMEIRO-v06.txt"
           }
           Compress-Archive -Path "$bin/*" -DestinationPath "Leoitchii-gtx1050ti-windows-experimental.zip" -Force
 
