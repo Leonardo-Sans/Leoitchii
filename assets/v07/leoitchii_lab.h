@@ -27,7 +27,7 @@ struct LabFlag {
 
 // Only switches present in Fritchii v5.5 or in the vetted Leoitchii v0.7 port.
 // Never expose old v0.6 env flags that are not implemented in the new code.
-inline constexpr std::array<LabFlag, 6> LabFlags{{
+inline constexpr std::array<LabFlag, 7> LabFlags{{
     {"precompile", "EDEN_NX2_PRECOMPILE", true, "1", "0",
      "Preparar shaders antes do jogo",
      "Menos stutter quando houver receita de shaders; consome CPU e memoria na preparacao."},
@@ -43,6 +43,9 @@ inline constexpr std::array<LabFlag, 6> LabFlags{{
     {"cutscene", "LEOITCHII_VIDEO_VBLANK_FIX", false, "1", "0",
      "Teste de cutscene 60 FPS (Eglantine)",
      "Evita o intervalo forcado durante video recente; apenas se um intervalo foi forcado."},
+    {"ram_zero_trim", "LEOITCHII_ZERO_TRIM", true, "1", "0",
+     "Economia de RAM: liberar paginas zeradas (Lichii 130)",
+     "Pode reduzir varios GB de RAM ocupada; desligue para investigar travamentos."},
     {"cache_log", "EDEN_NX2_TC_LOG", false, "1", nullptr,
      "Log detalhado do cache de texturas",
      "Envia dados extras ao log; pode reduzir desempenho e nao corrige a imagem."},
