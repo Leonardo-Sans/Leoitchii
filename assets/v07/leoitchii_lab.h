@@ -44,7 +44,6 @@ inline constexpr std::array<LabFlag, 5> LabFlags{{
 }};
 
 // Configuracao separada: nao muda qt-config.ini, firmware, chaves ou saves.
-inline QSettings Settings() = delete;
 
 inline bool Enabled(const LabFlag& flag) {
     QSettings settings{QSettings::IniFormat, QSettings::UserScope,
