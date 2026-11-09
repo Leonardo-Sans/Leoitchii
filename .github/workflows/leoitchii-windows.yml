@@ -27,9 +27,16 @@ jobs:
         run: bash scripts/integrar-fritchii.sh source
 
       - name: Integrar correção de sincronismo dos filmes Eglantine
-        if: contains(fromJSON('["experimentos-1050ti-v02","experimentos-gtx1050ti-cache-v04","lote-gtx1050ti-v05-preparacao","lote-gtx1050ti-v06-preparacao"]'), github.ref_name)
+        if: contains(fromJSON('["experimentos-1050ti-v02","experimentos-gtx1050ti-cache-v04","lote-gtx1050ti-v05-preparacao","lote-gtx1050ti-v06-preparacao","lote-v07-menu-identidade"]'), github.ref_name)
         shell: bash
         run: bash scripts/integrar-video-eglantine.sh source
+
+      - name: Gerar identidade do Leoitchii v0.7 (apenas build manual)
+        if: github.ref_name == 'lote-v07-menu-identidade'
+        shell: bash
+        run: |
+          python scripts/gerar-icone-leoitchii-v07.py source/dist/leoitchii.ico
+          python scripts/aplicar-identidade-laboratorio-v07.py source
 
       - name: Preparar ambiente MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -59,6 +66,10 @@ jobs:
       - name: Configurar Release
         shell: bash
         run: |
+          tag=leoitchii-gtx1050ti-v0.6
+          if [[ "${GITHUB_REF_NAME}" == "lote-v07-menu-identidade" ]]; then
+            tag=leoitchii-gtx1050ti-v0.7
+          fi
           cmake -S source -B source/build/leoitchii -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_TESTING=OFF \
@@ -70,7 +81,7 @@ jobs:
             -DYUZU_USE_BUNDLED_SDL3=ON \
             -DENABLE_UPDATE_CHECKER=OFF \
             -DUSE_DISCORD_PRESENCE=OFF \
-            -DLICHII_BUILD_TAG=leoitchii-gtx1050ti-v0.6 \
+            -DLICHII_BUILD_TAG=${tag} \
             -DLICHII_BUILD_PLATFORM=windows-x86_64
 
       - name: Compilar executáveis
@@ -81,9 +92,10 @@ jobs:
         shell: pwsh
         run: |
           $bin = "source/build/leoitchii/bin"
-          if (!(Test-Path "$bin/lichii.exe")) { throw "lichii.exe não foi gerado" }
+          $exe = if ($env:GITHUB_REF_NAME -eq "lote-v07-menu-identidade") { "Leoitchii.exe" } else { "lichii.exe" }
+          if (!(Test-Path "$bin/$exe")) { throw "$exe não foi gerado" }
           if (!(Test-Path "$bin/eden-cli.exe")) { throw "eden-cli.exe não foi gerado" }
-          windeployqt --release --no-translations "$bin/lichii.exe"
+          windeployqt --release --no-translations "$bin/$exe"
 
       - name: Criar pacote experimental
         shell: pwsh
@@ -109,6 +121,9 @@ jobs:
             Copy-Item "presets/Leoitchii-v06-IR-Memoria-OFF-A-B.cmd" "$bin/Leoitchii-v06-IR-Memoria-OFF-A-B.cmd"
             Copy-Item "presets/LEOITCHII-V05-Bloom-TESTE.cmd" "$bin/LEOITCHII-Bloom-TESTE.cmd"
             Copy-Item "presets/LEIA-PRIMEIRO-v06.txt" "$bin/LEIA-PRIMEIRO-v06.txt"
+          }
+          if ('${{ github.ref_name }}' -eq 'lote-v07-menu-identidade') {
+            Copy-Item 'docs/LEIA-PRIMEIRO-V07-MENU.md' "$bin/LEIA-PRIMEIRO-V07-MENU.md"
           }
           Compress-Archive -Path "$bin/*" -DestinationPath "Leoitchii-gtx1050ti-windows-experimental.zip" -Force
 
