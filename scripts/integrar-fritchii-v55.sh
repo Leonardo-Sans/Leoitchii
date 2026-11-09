@@ -27,6 +27,9 @@ grep -q 'EDEN_NX2_SPLIT' "$ROOT/src/video_core/gpu_split.cpp"
 grep -q 'EDEN_NX2_TC_LOG' "$ROOT/src/video_core/texture_cache/texture_cache.h"
 grep -q 'EDEN_NX2_RESETFIX' "$ROOT/dist/nx2_switches.txt"
 grep -q 'EDEN_NX2_FENCE_BATCH' "$ROOT/dist/nx2_switches.txt"
+# Fritchii v5.5 upstream uses local variables that collide with Settings::values
+# when MSVC treats C4459 as an error. Fix exact identifiers, not warning level.
+python scripts/corrigir-shadow-frizti-v07.py "$ROOT"
 # Keep proven AV1 Pascal fallback from v0.6 (adapted to current upstream).
 python scripts/portar-av1-pascal-v06.py "$ROOT"
 # Video 60 fps cutscene optional A/B; never silently enable the old v0.6 frame drop.
