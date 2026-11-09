@@ -82,14 +82,14 @@ vid_new = replace_exact(
 )
 vid_new = replace_exact(
     vid_new,
-    '''    impl->context.emplace(*impl->decoder);
+    r'''    impl->context.emplace(*impl->decoder);
     if (Settings::values.nvdec_emulation.GetValue() == Settings::NvdecEmulation::Gpu) {
         impl->hardware.emplace();
         impl->hardware->InitializeForDecoder(*impl->context, *impl->decoder);
     }
     impl->open = impl->context->OpenContext(*impl->decoder);
     LOG_INFO(HW_GPU, "nx2 video: decoder for \"{}\" {}", mime, impl->open ? "open" : "failed to open");''',
-    '''    impl->context.emplace(*impl->decoder);
+    r'''    impl->context.emplace(*impl->decoder);
     AVCodecContext* const codec_ctx = impl->context->GetCodecContext();
     const std::string_view decoder_name{impl->decoder->GetCodec()->name};
     const bool prefer_gpu =
