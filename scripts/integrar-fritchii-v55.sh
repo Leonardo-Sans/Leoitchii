@@ -33,6 +33,7 @@ python scripts/corrigir-shadow-frizti-v07.py "$ROOT"
 python scripts/corrigir-shadow-gpusplit-v07.py "$ROOT"
 # Fritchii 5.5 upstream engine locals conflict with MSVC /we4457 /we4458.
 python scripts/corrigir-shadow-engines-v07.py "$ROOT"
+python scripts/corrigir-shadow-qmd-vulkan-v07.py "$ROOT"
 # Lichii build 130: full Windows zero-page trim (#961) and two correctness fixes.
 # Each port is pinned and guarded; fail CI instead of silently skipping changes.
 python scripts/portar-lichii130-correcoes-v07.py "$ROOT"
