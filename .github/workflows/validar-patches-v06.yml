@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verificar sintaxe dos patches
         run: |
-          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py
+          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py
           bash -n scripts/integrar-fritchii.sh scripts/integrar-video-eglantine.sh
       - name: Integrar Fritchii e fallback Lichii
         run: bash scripts/integrar-fritchii.sh source
@@ -33,4 +33,9 @@ jobs:
           grep -q 'False(overlap.flags & ImageFlagBits::Remapped)' source/src/video_core/texture_cache/texture_cache.h
           grep -q 'm_clock_offset.reset' source/src/core/hle/service/nx2_gsv.h
           grep -q 'mesh_emulation.emplace' source/src/video_core/renderer_vulkan/vk_pipeline_cache.cpp
+          grep -q 'LeoitchiiAliasFastEnabled' source/src/video_core/texture_cache/texture_cache.h
+          grep -q 'GpuGuestMemory<u8, Tegra::Memory::GuestMemoryFlags::UnsafeRead>' source/src/video_core/texture_cache/texture_cache.h
+          grep -q 'void Free()' source/src/shader_recompiler/object_pool.h
+          grep -q 'LEOITCHII_IR_EARLY_FREE' source/src/video_core/renderer_vulkan/vk_pipeline_cache.cpp
+          grep -q 'SetupPartition' source/src/video_core/host_shaders/astc_decoder.comp
           git -C source diff --check
