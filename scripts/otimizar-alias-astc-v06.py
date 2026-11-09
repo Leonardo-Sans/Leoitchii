@@ -148,7 +148,9 @@ if git_hash != expected_hash:
 patched_shader = Path(__file__).resolve().parents[1] / "patches/astc_decoder_lichii_296.comp"
 if not patched_shader.is_file():
     raise SystemExit(f"Shader ASTC validado ausente: {patched_shader}")
-optimized_bytes = patched_shader.read_bytes()
+# Windows Git checkout pode converter arquivos de texto para CRLF. O shader
+# validado foi publicado com LF; normalizamos ANTES de conferir o hash Git.
+optimized_bytes = patched_shader.read_bytes().replace(b"\r\n", b"\n")
 patched_blob = (
     b"blob " + str(len(optimized_bytes)).encode("ascii") + b"\0" + optimized_bytes
 )
