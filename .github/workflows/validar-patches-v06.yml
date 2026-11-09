@@ -78,3 +78,7 @@ jobs:
             grep -q 'LEOITCHII_ZERO_TRIM' source/src/yuzu/leoitchii_lab.h
           fi
           git -C source diff --check
+
+      - name: Auditar compatibilidade dos demais ports Lichii 130 (sem aplicar)
+        if: github.ref_name == 'lote-v07-lichii130-ports'
+        run: bash scripts/auditar-compatibilidade-lichii130-v07.sh source
