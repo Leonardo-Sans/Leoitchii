@@ -2,7 +2,7 @@ name: Leoitchii - prototipo GTX1050Ti Windows
 
 on:
   push:
-    branches: [prototipo-gtx1050ti, experimentos-1050ti-v02, experimentos-gtx1050ti-cache-v04, lote-gtx1050ti-v05-preparacao, lote-gtx1050ti-v06-preparacao]
+    branches: [prototipo-gtx1050ti, experimentos-1050ti-v02, experimentos-gtx1050ti-cache-v04, lote-gtx1050ti-v05-preparacao, lote-gtx1050ti-v06-preparacao, lote-v07-consolidada-fritchii55]
   workflow_dispatch:
 
 permissions:
@@ -23,8 +23,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Integrar Fritchii v4.1 + correção Lichii
+        if: github.ref_name != 'lote-v07-consolidada-fritchii55'
         shell: bash
         run: bash scripts/integrar-fritchii.sh source
+
+      - name: Integrar Fritchii v5.5 + Leoitchii v0.7 (pacote consolidado)
+        if: github.ref_name == 'lote-v07-consolidada-fritchii55'
+        shell: bash
+        run: bash scripts/integrar-fritchii-v55.sh source
 
       - name: Integrar correção de sincronismo dos filmes Eglantine
         if: contains(fromJSON('["experimentos-1050ti-v02","experimentos-gtx1050ti-cache-v04","lote-gtx1050ti-v05-preparacao","lote-gtx1050ti-v06-preparacao","lote-v07-menu-identidade"]'), github.ref_name)
@@ -67,7 +73,7 @@ jobs:
         shell: bash
         run: |
           tag=leoitchii-gtx1050ti-v0.6
-          if [[ "${GITHUB_REF_NAME}" == "lote-v07-menu-identidade" ]]; then
+          if [[ "${GITHUB_REF_NAME}" == "lote-v07-menu-identidade" || "${GITHUB_REF_NAME}" == "lote-v07-consolidada-fritchii55" ]]; then
             tag=leoitchii-gtx1050ti-v0.7
           fi
           cmake -S source -B source/build/leoitchii -G Ninja \
@@ -92,7 +98,7 @@ jobs:
         shell: pwsh
         run: |
           $bin = "source/build/leoitchii/bin"
-          $exe = if ($env:GITHUB_REF_NAME -eq "lote-v07-menu-identidade") { "Leoitchii.exe" } else { "lichii.exe" }
+          $exe = if ($env:GITHUB_REF_NAME -eq "lote-v07-menu-identidade" -or $env:GITHUB_REF_NAME -eq "lote-v07-consolidada-fritchii55") { "Leoitchii.exe" } else { "lichii.exe" }
           if (!(Test-Path "$bin/$exe")) { throw "$exe não foi gerado" }
           if (!(Test-Path "$bin/eden-cli.exe")) { throw "eden-cli.exe não foi gerado" }
           windeployqt --release --no-translations "$bin/$exe"
@@ -124,6 +130,9 @@ jobs:
           }
           if ('${{ github.ref_name }}' -eq 'lote-v07-menu-identidade') {
             Copy-Item 'docs/LEIA-PRIMEIRO-V07-MENU.md' "$bin/LEIA-PRIMEIRO-V07-MENU.md"
+          }
+          if ('${{ github.ref_name }}' -eq 'lote-v07-consolidada-fritchii55') {
+            Copy-Item 'docs/LEIA-PRIMEIRO-V07-CONSOLIDADA.md' "$bin/LEIA-PRIMEIRO-V07-CONSOLIDADA.md"
           }
           Compress-Archive -Path "$bin/*" -DestinationPath "Leoitchii-gtx1050ti-windows-experimental.zip" -Force
 
