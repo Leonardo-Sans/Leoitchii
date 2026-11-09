@@ -4,6 +4,7 @@
 
 #include <array>
 #include <QAction>
+#include <QByteArray>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
@@ -46,8 +47,6 @@ inline constexpr std::array<LabFlag, 6> LabFlags{{
      "Log detalhado do cache de texturas",
      "Envia dados extras ao log; pode reduzir desempenho e nao corrige a imagem."},
 }};
-
-inline QSettings LabSettings() = delete;
 
 inline bool Enabled(const LabFlag& f) {
     QSettings cfg{QSettings::IniFormat, QSettings::UserScope,
