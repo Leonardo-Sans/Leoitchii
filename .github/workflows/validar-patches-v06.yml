@@ -23,13 +23,13 @@ jobs:
           python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py scripts/gerar-icone-leoitchii-v07.py scripts/aplicar-identidade-laboratorio-v07.py scripts/portar-eglantine-video-v07.py scripts/portar-lichii130-correcoes-v07.py scripts/alternar-trim-zero-v07.py
           bash -n scripts/integrar-fritchii.sh scripts/integrar-video-eglantine.sh scripts/portar-lichii130-trim-v07.sh
       - name: Integrar Fritchii e fallback Lichii
-        if: !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name)
+        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name) }}
         run: bash scripts/integrar-fritchii.sh source
       - name: Integrar vídeo Eglantine
-        if: !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name)
+        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name) }}
         run: bash scripts/integrar-video-eglantine.sh source
       - name: Validar trechos principais dos ports
-        if: !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name)
+        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name) }}
         run: |
           grep -q 'avcodec_find_decoder_by_name("libdav1d")' source/src/video_core/host1x/ffmpeg.cpp
           grep -q 'bool may_fail' source/src/video_core/vulkan_common/vulkan_memory_allocator.cpp
