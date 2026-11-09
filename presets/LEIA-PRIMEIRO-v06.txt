@@ -1,0 +1,55 @@
+LEOITCHII v0.6 EXPERIMENTAL - GTX 1050 Ti 4GB / 16GB RAM
+========================================================
+
+RESUMO
+- Uma UNICA build Windows com opcoes A/B via arquivos .cmd.
+- Base mantida: Fritchii v4.1, fallback Mesh Lichii #569,
+  pacing de video do Eglantine, cache Mesh e limites Vulkan.
+- Ocarina of Time AA deve ficar em GAME, nunca NoSharpening.
+- NAO diminui grama/fog/sombras/LOD automaticamente para todos os jogos.
+
+CORRECOES DE CODIGO
+- Lichii #879 e #912: FFmpeg prioriza libdav1d para video AV1, usando
+  threads padrao no Ryzen; diagnostico de CPU/GPU na abertura do video.
+- Lichii #880: evita retornar imagem falsa sem VRAM para texturas comuns.
+- Lichii #858 (parte): evita sincronizar aliases de texturas que nao mudaram.
+- Lichii #296: scan ASTC sem copia e shader ASTC otimizado.
+- Lichii #878: reduz pico de memoria durante compilacao SINCRONA
+  de shaders compute. NAO significa aumento garantido de FPS.
+
+JOGOS
+- Zelda: priorizar Handheld, GPU Fast, OoT AA Game, BC3,
+  VRAM Conservative, resolucao 0.5x no teste atual.
+  Reportado exterior ~8-14 FPS; interiores ate ~30 FPS;
+  intro ~11 FPS, com possivel melhora AV1 ainda nao testada.
+- DK Bananza: tela reportada ~15 FPS a 1x / handheld / Fast.
+  Comparar 1x vs 0.75x vs 0.5x na mesma cena; medir Game FPS.
+- Pokopia: reportado ~60 FPS. PRESERVAR configuracoes por jogo.
+  Conferir regressao rapida sem desabilitar efeitos.
+
+TESTES SEM OUTRA COMPILACAO
+1. Execute lichii.exe normalmente e verifique fps na mesma cena.
+2. Execute LEOITCHII-GTX1050Ti-Laboratorio-v06.cmd e escolha 1 efeito.
+3. Reabra normalmente para remover variaveis de ambiente do teste.
+4. Para analisar reversao do fast alias, escolha C.
+5. Para testar retorno do uso de RAM antigo, escolha D.
+6. Opcional e visual: teste E para BLOOM. Pode alterar cenas/agua.
+7. Use logs de VRAM pelo modo B; cuidado com o modo 8 (retencao).
+8. Nao apague shader cache, saves nem altere memory layout 8GB
+   do console achando que sao os 4GB da sua GTX.
+
+REGISTRE
+- Game FPS no canto inferior direito (30 FPS no canto esquerdo
+  pode representar limite, NAO FPS efetivo).
+- Frame time, VRAM dedicada/compartilhada, uso da RAM do Windows.
+- Geometria, HUD, agua, brilho, sombras, elementos temporariamente pretos.
+- Velocidade do gameplay: CPU Clock Normal, Speed 100%, Frame Gen Off,
+  avaliar Dynamic FPS separadamente; fps sozinho nao garante timing.
+
+SEGURANCA/RESTAURACAO
+- Os launchers nao alteram ROM, dados do jogo nem configuracoes salvas.
+- Configuracoes graficas por jogo alteradas dentro da interface
+  PERSISTEM e devem ser anotadas para restaurar.
+- Se v0.6 regredir, use a v0.5 funcional.
+- Nao compartilhar keys, firmware, jogo nem saves no GitHub.
+- Nao mesclar na main antes dos testes.
