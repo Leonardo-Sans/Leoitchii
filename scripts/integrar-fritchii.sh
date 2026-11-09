@@ -73,4 +73,6 @@ echo "Aplicando seletivamente otimização AV1 Lichii #879 (revisada por #912)..
 python scripts/portar-av1-pascal-v06.py "$SOURCE_DIR"
 echo "Aplicando fallback seguro de texturas sem VRAM Lichii #880..."
 python scripts/portar-oom-texturas-v06.py "$SOURCE_DIR"
+echo "Aplicando optimização de alias e ASTC Lichii #858/#296..."
+python scripts/otimizar-alias-astc-v06.py "$SOURCE_DIR"
 echo "Pronto para tentar compilar, ainda não validado em hardware real."
