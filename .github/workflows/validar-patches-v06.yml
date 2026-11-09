@@ -1,0 +1,36 @@
+name: Leoitchii v0.6 - validar patches sem compilar
+on:
+  push:
+    branches: [lote-gtx1050ti-v06-preparacao]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leoitchii-v06-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validar-patches:
+    name: Integrar fontes / sintaxe (sem Windows build)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar sintaxe dos patches
+        run: |
+          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py
+          bash -n scripts/integrar-fritchii.sh scripts/integrar-video-eglantine.sh
+      - name: Integrar Fritchii e fallback Lichii
+        run: bash scripts/integrar-fritchii.sh source
+      - name: Integrar vídeo Eglantine
+        run: bash scripts/integrar-video-eglantine.sh source
+      - name: Validar trechos principais dos ports
+        run: |
+          grep -q 'avcodec_find_decoder_by_name("libdav1d")' source/src/video_core/host1x/ffmpeg.cpp
+          grep -q 'bool may_fail' source/src/video_core/vulkan_common/vulkan_memory_allocator.cpp
+          grep -q 'False(overlap.flags & ImageFlagBits::Remapped)' source/src/video_core/texture_cache/texture_cache.h
+          grep -q 'm_clock_offset.reset' source/src/core/hle/service/nx2_gsv.h
+          grep -q 'mesh_emulation.emplace' source/src/video_core/renderer_vulkan/vk_pipeline_cache.cpp
+          git -C source diff --check
