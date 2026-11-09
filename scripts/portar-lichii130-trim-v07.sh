@@ -15,14 +15,13 @@ PATCH="$(mktemp)"
 trap 'rm -f "$PATCH"' EXIT
 git -C "$ROOT" show --format= --no-ext-diff "$SHA" -- \
   src/common/host_memory.cpp \
-  src/common/host_memory.h \
   src/core/device_memory.cpp \
-  src/core/device_memory.h \
-  src/tests/common/host_memory.cpp > "$PATCH"
+  src/core/device_memory.h > "$PATCH"
 if ! git -C "$ROOT" apply --check --recount "$PATCH"; then
   echo "INCOMPATIVEL: Lichii #961 exige adaptacao de conflitos com Fritchii 5.5. Nenhum patch aplicado." >&2
   exit 5
 fi
 git -C "$ROOT" apply --recount "$PATCH"
+python scripts/portar-lichii130-hostheader-v07.py "$ROOT"
 python scripts/alternar-trim-zero-v07.py "$ROOT"
 echo "Port Lichii #961 aplicado integralmente, com rollback por LEOITCHII_ZERO_TRIM=0."
