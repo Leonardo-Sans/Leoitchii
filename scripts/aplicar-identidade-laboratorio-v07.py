@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Leoitchii v0.7: menu Qt, nome do executavel e identidade Windows.
-Alvos pinados na base Fritchii v4.1. Falha antes de escrever se divergir.
+Alvos pinados na base Fritchii v5.5. Falha antes de escrever se divergir.
 Executar depois de integrar Fritchii/Lichii/Eglantine e gerar leoitchii.ico.
 """
 from pathlib import Path
@@ -22,6 +22,7 @@ paths = [
     "src/yuzu/yuzu.qrc",
     "src/yuzu/yuzu.rc",
     "src/yuzu/CMakeLists.txt",
+    "src/yuzu/fritchii/fritchii_ui.cpp",
 ]
 original = {p: (root / p).read_text(encoding="utf-8") for p in paths}
 patched = dict(original)
@@ -47,8 +48,8 @@ once("src/yuzu/main_window.cpp",
      '#include "main_window.h"\n#include "leoitchii_lab.h"\n',
      "include menu")
 once("src/yuzu/main_window.cpp",
-     '    ui->setupUi(this);\n    statusBar()->hide();',
-     '    ui->setupUi(this);\n    statusBar()->hide();\n    Leoitchii::InstallMenu(this);',
+     '    SetUpFritchiiUi();\n',
+     '    SetUpFritchiiUi();\n    Leoitchii::InstallMenu(this);\n',
      "instalar menu")
 once("src/yuzu/main_window.cpp",
      '''    static const std::string build_id = std::string{Common::g_build_id};
@@ -88,7 +89,7 @@ once("src/yuzu/about_dialog.cpp",
         fmt::format(fmt::runtime(std::string(Common::g_title_bar_format_idle)), build_id);
     const auto yuzu_build_version = override_build.empty() ? yuzu_build : override_build;''',
      '''    const std::string yuzu_build_version{
-        "Leoitchii v0.7 (experimental) | base Fritchii 4.1 / Lichii"};''',
+        "Leoitchii v0.7 (experimental) | base Fritchii 5.5 + patches Pascal"};''',
      "versao em sobre")
 once("src/yuzu/yuzu.qrc",
      '../../dist/fritchii.ico</file>',
@@ -102,6 +103,19 @@ once("src/yuzu/CMakeLists.txt",
      'set_target_properties(yuzu PROPERTIES OUTPUT_NAME "lichii")',
      'set_target_properties(yuzu PROPERTIES OUTPUT_NAME "Leoitchii")',
      "nome exe")
+
+once("src/yuzu/fritchii/fritchii_ui.cpp",
+     'Rename(ui.action_About, tr("&About Fritchii"));',
+     'Rename(ui.action_About, tr("&Sobre o Leoitchii"));',
+     "menu sobre Fritchii")
+once("src/yuzu/about_dialog.cpp",
+     'setWindowTitle(tr("About Fritchii"));',
+     'setWindowTitle(tr("Sobre o Leoitchii"));',
+     "dialogo Fritchii")
+once("src/yuzu/about_dialog.cpp",
+     'ui->labelYuzu->setText(QStringLiteral("<span style=\'font-size:30px\'>Fritchii</span>"));',
+     'ui->labelYuzu->setText(QStringLiteral("<span style=\'font-size:30px\'>Leoitchii</span>"));',
+     "cabecalho Fritchii")
 
 version = r"""
 // Leoitchii v0.7 - dados exibidos pelo Windows Explorer em Propriedades.
@@ -144,5 +158,5 @@ for p, contents in patched.items():
     (root / p).write_text(contents, encoding="utf-8", newline="\n")
 target = root / "src/yuzu/leoitchii_lab.h"
 target.write_bytes(asset.read_bytes())
-print("Leoitchii v0.7: menu Qt, identidade Windows, Leoitchii.exe e icone aplicados.")
+print("Leoitchii v0.7 sobre Fritchii 5.5: menu Qt, identidade e Leoitchii.exe aplicados.")
 print("Nao ha compilacao implicita; codigo deve ser testado no CI e no PC.")
