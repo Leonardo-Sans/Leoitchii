@@ -40,6 +40,10 @@ python scripts/portar-lichii130-correcoes-v07.py "$ROOT"
 bash scripts/portar-lichii130-trim-v07.sh "$ROOT"
 # Keep proven AV1 Pascal fallback from v0.6 (adapted to current upstream).
 python scripts/portar-av1-pascal-v06.py "$ROOT"
+# Explicit port of v0.6 improvements omitted from the v5.5 rebase.
+python scripts/portar-legacy-alias-astc-v07.py "$ROOT"
+# Lichii #807: explain VK_ERROR_OUT_OF_HOST_MEMORY in Windows logs (diagnostic only).
+python scripts/portar-lichii807-memoria-v07.py "$ROOT"
 # Video 60 fps cutscene optional A/B; never silently enable the old v0.6 frame drop.
 python scripts/portar-eglantine-video-v07.py "$ROOT"
 python scripts/gerar-icone-leoitchii-v07.py "$ROOT/dist/leoitchii.ico"

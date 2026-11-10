@@ -27,7 +27,7 @@ struct LabFlag {
 
 // Only switches present in Fritchii v5.5 or in the vetted Leoitchii v0.7 port.
 // Never expose old v0.6 env flags that are not implemented in the new code.
-inline constexpr std::array<LabFlag, 7> LabFlags{{
+inline constexpr std::array<LabFlag, 9> LabFlags{{
     {"precompile", "EDEN_NX2_PRECOMPILE", true, "1", "0",
      "Preparar shaders antes do jogo",
      "Menos stutter quando houver receita de shaders; consome CPU e memoria na preparacao."},
@@ -47,6 +47,14 @@ inline constexpr std::array<LabFlag, 7> LabFlags{{
     {"ram_zero_trim", "LEOITCHII_ZERO_TRIM", true, "1", "0",
      "Economia de RAM: liberar paginas zeradas (Lichii 130)",
      "Pode reduzir varios GB de RAM ocupada; desligue para investigar travamentos."},
+    {"alias_fast", "LEOITCHII_ALIAS_FAST", false, "1", "0",
+     "v0.6: atalho de sincronizacao de texturas (teste)",
+     "Recupera ticks de alias do Lichii #858. Pode afetar texturas pretas e objetos "
+     "invisiveis; desligado inicialmente para teste A/B."},
+    {"astc_direct", "LEOITCHII_ASTC_DIRECT_SCAN", false, "1", "0",
+     "v0.6: leitura ASTC direta sem copia (teste)",
+     "Usa leitura direta da memoria guest Lichii #296; preserva shader da base Fritchii "
+     "5.5 e permite desligar para comparar artefatos."},
     {"cache_log", "EDEN_NX2_TC_LOG", false, "1", nullptr,
      "Log detalhado do cache de texturas",
      "Envia dados extras ao log; pode reduzir desempenho e nao corrige a imagem."},
