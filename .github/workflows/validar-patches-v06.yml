@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verificar sintaxe dos patches
         run: |
-          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py scripts/gerar-icone-leoitchii-v07.py scripts/aplicar-identidade-laboratorio-v07.py scripts/portar-eglantine-video-v07.py scripts/portar-lichii130-correcoes-v07.py scripts/alternar-trim-zero-v07.py scripts/corrigir-shadow-engines-v07.py scripts/corrigir-shadow-qmd-vulkan-v07.py scripts/portar-legacy-alias-astc-v07.py
+          python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py scripts/gerar-icone-leoitchii-v07.py scripts/aplicar-identidade-laboratorio-v07.py scripts/portar-eglantine-video-v07.py scripts/portar-lichii130-correcoes-v07.py scripts/alternar-trim-zero-v07.py scripts/corrigir-shadow-engines-v07.py scripts/corrigir-shadow-qmd-vulkan-v07.py scripts/portar-legacy-alias-astc-v07.py scripts/portar-lichii807-memoria-v07.py
           bash -n scripts/integrar-fritchii.sh scripts/integrar-video-eglantine.sh scripts/portar-lichii130-trim-v07.sh
       - name: Integrar Fritchii e fallback Lichii
         if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports","lote-v07-pos-teste-video-pokopia","lote-v07-resgate-v06-astc-alias"]'), github.ref_name) }}
@@ -95,6 +95,9 @@ jobs:
             grep -q 'GpuGuestMemory<u8, Tegra::Memory::GuestMemoryFlags::UnsafeRead>' source/src/video_core/texture_cache/texture_cache.h
             grep -q 'LEOITCHII_ASTC_DIRECT_SCAN' source/src/yuzu/leoitchii_lab.h
             grep -q 'LEOITCHII_ALIAS_FAST' source/src/yuzu/leoitchii_lab.h
+            grep -q 'ReportLeoitchiiHostMemoryFailure(exception.GetResult())' source/src/video_core/renderer_vulkan/vk_compute_pipeline.cpp
+            grep -q 'ReportLeoitchiiHostMemoryFailure(exception.GetResult())' source/src/video_core/renderer_vulkan/vk_graphics_pipeline.cpp
+            test -s source/src/video_core/renderer_vulkan/leoitchii_host_memory_failure.h
           fi
           git -C source diff --check
 
