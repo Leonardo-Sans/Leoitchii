@@ -1,7 +1,7 @@
 name: Leoitchii v0.6 - validar patches sem compilar
 on:
   push:
-    branches: [lote-gtx1050ti-v06-preparacao, lote-v07-menu-identidade, lote-v07-consolidada-fritchii55, lote-v07-lichii130-ports]
+    branches: [lote-gtx1050ti-v06-preparacao, lote-v07-menu-identidade, lote-v07-consolidada-fritchii55, lote-v07-lichii130-ports, lote-v07-pos-teste-video-pokopia]
   workflow_dispatch:
 
 permissions:
@@ -23,13 +23,13 @@ jobs:
           python3 -m py_compile scripts/portar-av1-pascal-v06.py scripts/portar-oom-texturas-v06.py scripts/otimizar-alias-astc-v06.py scripts/liberar-ir-compute-v06.py scripts/gerar-icone-leoitchii-v07.py scripts/aplicar-identidade-laboratorio-v07.py scripts/portar-eglantine-video-v07.py scripts/portar-lichii130-correcoes-v07.py scripts/alternar-trim-zero-v07.py scripts/corrigir-shadow-engines-v07.py scripts/corrigir-shadow-qmd-vulkan-v07.py
           bash -n scripts/integrar-fritchii.sh scripts/integrar-video-eglantine.sh scripts/portar-lichii130-trim-v07.sh
       - name: Integrar Fritchii e fallback Lichii
-        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name) }}
+        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports","lote-v07-pos-teste-video-pokopia"]'), github.ref_name) }}
         run: bash scripts/integrar-fritchii.sh source
       - name: Integrar vídeo Eglantine
-        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name) }}
+        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports","lote-v07-pos-teste-video-pokopia"]'), github.ref_name) }}
         run: bash scripts/integrar-video-eglantine.sh source
       - name: Validar trechos principais dos ports
-        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name) }}
+        if: ${{ !contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports","lote-v07-pos-teste-video-pokopia"]'), github.ref_name) }}
         run: |
           grep -q 'avcodec_find_decoder_by_name("libdav1d")' source/src/video_core/host1x/ffmpeg.cpp
           grep -q 'bool may_fail' source/src/video_core/vulkan_common/vulkan_memory_allocator.cpp
@@ -57,10 +57,10 @@ jobs:
           git -C source diff --check
 
       - name: Integrar Fritchii v5.5 e patches Leoitchii v0.7
-        if: contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name)
+        if: contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports","lote-v07-pos-teste-video-pokopia"]'), github.ref_name)
         run: bash scripts/integrar-fritchii-v55.sh source
       - name: Validar codigo e personalizacao da v0.7 Fritchii v5.5
-        if: contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports"]'), github.ref_name)
+        if: contains(fromJSON('["lote-v07-consolidada-fritchii55","lote-v07-lichii130-ports","lote-v07-pos-teste-video-pokopia"]'), github.ref_name)
         run: |
           grep -q 'Leoitchii::InstallMenu(this)' source/src/yuzu/main_window.cpp
           grep -q 'Leoitchii::ApplyAtStartup()' source/src/yuzu/main.cpp
@@ -70,7 +70,7 @@ jobs:
           grep -q 'LEOITCHII_VIDEO_VBLANK_FIX' source/src/core/hle/service/nx2_gsv.h
           grep -q 'avcodec_find_decoder_by_name("libdav1d")' source/src/video_core/host1x/ffmpeg.cpp
           test -s source/dist/leoitchii.ico
-          if [[ "${GITHUB_REF_NAME}" == "lote-v07-lichii130-ports" ]]; then
+          if [[ "${GITHUB_REF_NAME}" == "lote-v07-lichii130-ports" || "${GITHUB_REF_NAME}" == "lote-v07-pos-teste-video-pokopia" ]]; then
             grep -q 'next_generation_base.fetch_add' source/src/core/device_memory_manager.h
             grep -q 'new_end = (start + size - 1)' source/src/common/multi_level_page_table.inc
             grep -q 'TrimZeroPages() const' source/src/common/host_memory.cpp
@@ -82,6 +82,11 @@ jobs:
             grep -q 'for (const u64 dispatch_count : dispatches.unbounded)' source/src/video_core/engines/maxwell_3d.cpp
             grep -q 'u32 matched_audits = 0;' source/src/video_core/nx2_qmd_prediction.cpp
             grep -q 'split.RecordDispatchWrite(\*indirect_device, 12);' source/src/video_core/renderer_vulkan/vk_rasterizer.cpp
+          fi
+          if [[ "${GITHUB_REF_NAME}" == "lote-v07-pos-teste-video-pokopia" ]]; then
+            grep -q 'Settings::values.oot_30fps.GetValue() && !recent_video' source/src/core/hle/service/nx2_gsv.h
+            grep -q 'swap_interval = 1;' source/src/core/hle/service/nx2_gsv.h
+            grep -q 'LEOITCHII_VIDEO_VBLANK_FIX' source/src/yuzu/leoitchii_lab.h
           fi
           git -C source diff --check
 
