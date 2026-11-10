@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Port estrito e reversivel da parte de vblank do teste Eglantine f7a902.
 A v0.6 perdeu musica com o pacing de descarte de quadros: NAO importar esse trecho.
-So atua com EDEN_NX2_SWAP_INTERVAL != 0 e LEOITCHII_VIDEO_VBLANK_FIX=1.
+Atua apenas com LEOITCHII_VIDEO_VBLANK_FIX=1: intervalo externo e modo OoT 30 FPS.
 """
 from pathlib import Path
 import sys
@@ -48,6 +48,27 @@ one("""        if (forced_interval != 0) {
             swap_interval = forced_interval;
         }""", "vblank")
 
+# The Fritchii 5.5 OoT 30 FPS limiter is applied after forced_interval.
+# In the original Leoitchii port the recent-video flag did not bypass it, so
+# the experimental setting was ineffective for OoT's own 30-FPS mode.
+# Keep gameplay in 30-FPS mode and present the decoded 60-FPS opening at
+# one vblank only while video decoding remains active (500ms expiry).
+# OFF remains byte-for-byte equivalent to Fritchii's default timing.
+one("""        if (process != nullptr && process->GetProgramId() == OcarinaOfTimeId &&
+            Settings::values.oot_30fps.GetValue()) {
+            swap_interval = (std::max)(swap_interval, 2U);
+        }""", """        if (process != nullptr && process->GetProgramId() == OcarinaOfTimeId &&
+            Settings::values.oot_30fps.GetValue() && !recent_video) {
+            swap_interval = (std::max)(swap_interval, 2U);
+        }
+        // A/B only: when OoT is playing a recently decoded movie, display
+        // each frame at one vblank; automatically revert to 30 FPS afterward.
+        // This is presentation pacing, not a change to game simulation speed.
+        if (recent_video && process != nullptr &&
+            process->GetProgramId() == OcarinaOfTimeId) {
+            swap_interval = 1;
+        }""", "Ocarina 30-FPS override during video")
+
 one("""            if (input.end) {
                 decoder->Drain(pictures);
             }
@@ -65,4 +86,4 @@ one("""            if (input.end) {
 if data == original:
     raise SystemExit("Nenhuma alteracao de video aplicada")
 file.write_text(data, encoding="utf-8", newline="\n")
-print("Eglantine vblank cutscene (A/B opt-in) aplicado. No frame drop pacing.")
+print("A/B video OoT 30->60 FPS during decoded cutscene installed (opt-in); no frame drop pacing.")

@@ -41,8 +41,9 @@ inline constexpr std::array<LabFlag, 7> LabFlags{{
      "Correcao de desenho indireto (Bananza)",
      "Mantem o workaround de terreno do Fritchii; desligar pode piorar a geometria."},
     {"cutscene", "LEOITCHII_VIDEO_VBLANK_FIX", false, "1", "0",
-     "Teste de cutscene 60 FPS (Eglantine)",
-     "Evita o intervalo forcado durante video recente; apenas se um intervalo foi forcado."},
+     "Zelda: video da abertura a 60 FPS (teste)",
+     "Mantem jogo em 30 FPS e usa um intervalo de vblank durante video decodificado. "
+     "Experimento reversivel: exige reinicio e nao garante corrigir o som."},
     {"ram_zero_trim", "LEOITCHII_ZERO_TRIM", true, "1", "0",
      "Economia de RAM: liberar paginas zeradas (Lichii 130)",
      "Pode reduzir varios GB de RAM ocupada; desligue para investigar travamentos."},
